@@ -6,16 +6,26 @@ import (
 	"image/color"
 	"image/png"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
-	handler := http.HandlerFunc(handleRequest)
-	http.Handle("/photo", handler)
+	r := mux.NewRouter()
+	r.HandleFunc("/placebelg/{width:[0-9]+}/{height:[0-9]+}", PlaceBelgHandler)
+
+	http.Handle("/", r)
 	http.ListenAndServe(":30472", nil)
 }
 
-func handleRequest(w http.ResponseWriter, r *http.Request) {
-	fileBytes := createImg()
+func PlaceBelgHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	width, _ := strconv.Atoi(vars["width"])
+	height, _ := strconv.Atoi(vars["height"])
+
+	fileBytes := createImg(width, height)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/octet-stream")
@@ -23,29 +33,18 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func createImg() []byte {
-	width := 200
-	height := 100
+func createImg(width int, height int) []byte {
 
 	upLeft := image.Point{0, 0}
 	lowRight := image.Point{width, height}
 
 	img := image.NewRGBA(image.Rectangle{upLeft, lowRight})
 
-	// Colors are defined by Red, Green, Blue, Alpha uint8 values.
-	cyan := color.RGBA{100, 200, 200, 0xff}
+	custom := color.RGBA{10, 12, 140, 0xff}
 
-	// Set color for each pixel.
 	for x := 0; x < width; x++ {
 		for y := 0; y < height; y++ {
-			switch {
-			case x < width/2 && y < height/2: // upper left quadrant
-				img.Set(x, y, cyan)
-			case x >= width/2 && y >= height/2: // lower right quadrant
-				img.Set(x, y, color.White)
-			default:
-				// Use zero value.
-			}
+			img.Set(x, y, custom)
 		}
 	}
 
