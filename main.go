@@ -58,6 +58,8 @@ func HeroBadgeHandler(w http.ResponseWriter, r *http.Request) {
 	dc.DrawCircle(float64(out_width/2), float64(out_height/2), float64(out_height/4))
 	dc.SetRGBA(0, 0, 0, 0.6)
 	dc.Fill()
+	dc.SetRGBA(0.2, 0.6, 0.1, 1.0)
+	dc.DrawStringAnchored("Dobre ziomy", float64(out_width/2), float64(out_height/2), 0.5, 0.5)
 	dc.EncodePNG(w)
 
 	// buf := new(bytes.Buffer)
