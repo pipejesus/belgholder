@@ -24,6 +24,7 @@ import (
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/placebelg/{width:[0-9]+}/{height:[0-9]+}/{users:[a-z]+}", PlaceBelgHandler)
+	r.HandleFunc("/hero-badge", HeroBadgeHandler).Queries("gitusers", "{gitusers}", "msg", "{msg}")
 	r.HandleFunc("/hero-badge", HeroBadgeHandler).Queries("gitusers", "{gitusers}")
 
 	http.Handle("/", r)
@@ -33,6 +34,13 @@ func main() {
 func HeroBadgeHandler(w http.ResponseWriter, r *http.Request) {
 
 	users := strings.Split(mux.Vars(r)["gitusers"], ",")
+	msg := ""
+
+	all_vars := mux.Vars(r)
+
+	if val, ok := all_vars["msg"]; ok {
+		msg = val
+	}
 
 	if len(users) == 0 {
 		return
@@ -55,16 +63,15 @@ func HeroBadgeHandler(w http.ResponseWriter, r *http.Request) {
 		x += cropped_image.Bounds().Dx()
 	}
 
-	dc.DrawCircle(float64(out_width/2), float64(out_height/2), float64(out_height/4))
-	dc.SetRGBA(0, 0, 0, 0.6)
-	dc.Fill()
-	dc.SetRGBA(0.2, 0.6, 0.1, 1.0)
-	dc.DrawStringAnchored("Dobre ziomy", float64(out_width/2), float64(out_height/2), 0.5, 0.5)
-	dc.EncodePNG(w)
+	dc.LoadFontFace("fonts/AlmaMono-Heavy.ttf", 32)
 
-	// buf := new(bytes.Buffer)
-	// png.Encode(buf, imgAv)
-	// return buf.Bytes()
+	dc.SetRGBA(0.2, 0.6, 0.1, 1.0)
+
+	if len(msg) > 0 {
+		dc.DrawStringAnchored(msg, float64(out_width/2), float64(out_height/2), 0.5, 0.5)
+	}
+
+	dc.EncodePNG(w)
 
 	return
 }
