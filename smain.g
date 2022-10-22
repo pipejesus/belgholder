@@ -3,6 +3,7 @@ package main
 import (
 	"image"
 	"image/gif"
+	"image/png"
 	"net/http"
 
 	"github.com/andybons/gogif"
@@ -20,7 +21,7 @@ func main() {
 
 func ComicHandler(w http.ResponseWriter, r *http.Request) {
 	gituser := mux.Vars(r)["gituser"]
-	msg := mux.Vars(r)["msg"]
+	// msg := mux.Vars(r)["msg"]
 
 	avatar_image, err := avatar.GetOne(gituser)
 
@@ -32,17 +33,17 @@ func ComicHandler(w http.ResponseWriter, r *http.Request) {
 	out_height := 200
 
 	animator := NewAnimator(out_width, out_height, avatar_image)
-	images := animator.RenderFrames(msg)
-	// img_debug := animator.Debug()
-	// png.Encode(w, img_debug)
-	gif.EncodeAll(w, QuantizeImagesAndAddToGif(images))
+	// images := animator.RenderFrames()
+	img_debug := animator.Debug()
+	png.Encode(w, img_debug)
+	// gif.EncodeAll(w, QuantizeImagesAndAddToGif(images))
 
 	return
 }
 
 func QuantizeImagesAndAddToGif(frames []image.Image) *gif.GIF {
 	out_gif := &gif.GIF{
-		LoopCount: 0,
+		LoopCount: 100,
 	}
 
 	for _, simage := range frames {
@@ -53,7 +54,7 @@ func QuantizeImagesAndAddToGif(frames []image.Image) *gif.GIF {
 
 		// Add new frame to animated GIF
 		out_gif.Image = append(out_gif.Image, palettedImage)
-		out_gif.Delay = append(out_gif.Delay, 10)
+		out_gif.Delay = append(out_gif.Delay, 100)
 	}
 
 	return out_gif

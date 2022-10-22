@@ -3,6 +3,7 @@ module github.com/pipejesus/belgholder
 go 1.19
 
 require (
+	github.com/andybons/gogif v0.0.0-20140526152223-16d573594812
 	github.com/disintegration/imaging v1.6.2
 	github.com/fogleman/gg v1.3.0
 	github.com/google/go-github/v47 v47.1.0
