@@ -94,6 +94,8 @@ func (a animator) RenderFrames(msg string) []image.Image {
 			ctx.SetRGBA(0.1, 0.7, 0.21, 1.0)
 			ctx.DrawRoundedRectangle(msg_center_x-5.0, m_y, msg_max_w+10.0, m_h, 3.0)
 			ctx.Fill()
+			ctx.DrawRegularPolygon(3, msg_center_x-5.0-5.0, msg_center_y, 10.0, -math.Pi/2)
+			ctx.Fill()
 			ctx.SetRGBA(0.9, 0.89, 0.91, 1.0)
 			ctx.DrawStringWrapped(msg, msg_center_x, msg_center_y, 0, 0.5, msg_max_w, 1.2, gg.AlignRight)
 			// ctx.DrawStringAnchored(msg, float64(a.out_w-msg_padding), float64(msg_padding), 1.0, 1.0)
